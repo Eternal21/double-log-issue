@@ -1,5 +1,8 @@
+using System.Text;
 using AspNetCore.Authentication.ApiKey;
 using DoubleLogProject;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
