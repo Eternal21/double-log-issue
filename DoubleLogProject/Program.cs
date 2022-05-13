@@ -9,7 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddAuthentication(ApiKeyDefaults.AuthenticationScheme)
+// builder.Services.AddAuthentication(ApiKeyDefaults.AuthenticationScheme) // this causes the double log
+// builder.Services.AddAuthentication() // this fixes the double log
+builder.Services.AddAuthentication(options => // this also fixes the double log
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
     .AddJwtBearer(options =>
     {
         options.SaveToken = true;
