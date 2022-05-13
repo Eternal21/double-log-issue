@@ -1,5 +1,6 @@
 using AspNetCore.Authentication.ApiKey;
 using DoubleLogProject;
+using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,16 @@ builder.Services.AddAuthentication(ApiKeyDefaults.AuthenticationScheme)
     {
         options.Realm = "Sample Web API";
         options.KeyName = "X-API-KEY";
+    })
+    .AddPolicyScheme("BearerOrApiKey", "BearerOrApiKey", options =>
+    {
+        options.ForwardDefaultSelector = context =>
+        {
+            string authorization = context.Request.Headers[HeaderNames.Authorization];
+            if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
+                return "Bearer";
+            return "ApiKey";
+        };
     });
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
